@@ -3,7 +3,7 @@ package dbr
 import (
 	"testing"
 
-	"github.com/mailru/dbr/dialect"
+	"github.com/noil/dbr/dialect"
 	"github.com/stretchr/testify/assert"
 )
 

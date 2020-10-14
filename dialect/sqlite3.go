@@ -43,6 +43,10 @@ func (d sqlite3) OnConflict(_ string) string {
 	return ""
 }
 
+func (d sqlite3) OnConflictDoNothing(_ string) string {
+	return ""
+}
+
 func (d sqlite3) Proposed(_ string) string {
 	return ""
 }

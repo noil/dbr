@@ -9,16 +9,24 @@ import (
 // ConflictStmt is ` ON CONFLICT ...` part of InsertStmt
 type ConflictStmt interface {
 	Action(column string, action interface{}) ConflictStmt
+	DoNothing(flag bool) ConflictStmt
 }
 
 type conflictStmt struct {
 	constraint string
+	doNothing  bool
 	actions    map[string]interface{}
 }
 
 // Action adds action for column which will do if conflict happens
 func (b *conflictStmt) Action(column string, action interface{}) ConflictStmt {
 	b.actions[column] = action
+	return b
+}
+
+// DoNothing sets a flag
+func (b *conflictStmt) DoNothing(flag bool) ConflictStmt {
+	b.doNothing = flag
 	return b
 }
 
@@ -29,6 +37,7 @@ type InsertStmt interface {
 	Values(value ...interface{}) InsertStmt
 	Record(structValue interface{}) InsertStmt
 	OnConflictMap(constraint string, actions map[string]interface{}) InsertStmt
+	OnConflictDoNothing(constraint string) InsertStmt
 	OnConflict(constraint string) ConflictStmt
 }
 
@@ -89,7 +98,16 @@ func (b *insertStmt) Build(d Dialect, buf Buffer) error {
 
 		buf.WriteValue(tuple...)
 	}
-	if b.Conflict != nil && len(b.Conflict.actions) > 0 {
+	if b.Conflict != nil && b.Conflict.doNothing {
+		keyword := d.OnConflictDoNothing(b.Conflict.constraint)
+		if len(keyword) == 0 {
+			return fmt.Errorf("Dialect %s does not support OnConflictDoNothing", d)
+		}
+		buf.WriteString(" ")
+		buf.WriteString(keyword)
+		buf.WriteString(" ")
+	}
+	if b.Conflict != nil && !b.Conflict.doNothing && len(b.Conflict.actions) > 0 {
 		keyword := d.OnConflict(b.Conflict.constraint)
 		if len(keyword) == 0 {
 			return fmt.Errorf("Dialect %s does not support OnConflict", d)
@@ -174,6 +192,12 @@ func (b *insertStmt) Record(structValue interface{}) InsertStmt {
 // OnConflictMap allows to add actions for constraint violation, e.g UPSERT
 func (b *insertStmt) OnConflictMap(constraint string, actions map[string]interface{}) InsertStmt {
 	b.Conflict = &conflictStmt{constraint: constraint, actions: actions}
+	return b
+}
+
+// OnConflictDoNothing skips insetring a row when conflict happend
+func (b *insertStmt) OnConflictDoNothing(constraint string) InsertStmt {
+	b.Conflict = &conflictStmt{constraint: constraint, doNothing: true}
 	return b
 }
 

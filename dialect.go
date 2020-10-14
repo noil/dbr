@@ -12,6 +12,7 @@ type Dialect interface {
 	EncodeBytes(b []byte) string
 	Placeholder(n int) string
 	OnConflict(constraint string) string
+	OnConflictDoNothing(constraint string) string
 	Proposed(column string) string
 	Limit(offset, limit int64) string
 	Prewhere() string

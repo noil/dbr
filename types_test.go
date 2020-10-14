@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mailru/dbr/dialect"
+	"github.com/noil/dbr/dialect"
 	"github.com/stretchr/testify/assert"
 )
 

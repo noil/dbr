@@ -1,4 +1,4 @@
-module github.com/noil/dbr/v3
+module github.com/noil/dbr
 
 go 1.15
 
@@ -8,7 +8,7 @@ require (
 	github.com/lib/pq v1.2.0
 	github.com/mailru/go-clickhouse v1.1.0
 	github.com/mattn/go-sqlite3 v1.11.0
-	github.com/noil/dbr v3.0.0+incompatible
+	github.com/noil/dbr v1.1.1
 	github.com/stretchr/testify v1.4.0
 	google.golang.org/appengine v1.6.2 // indirect
 )

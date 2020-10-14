@@ -40,6 +40,13 @@ func (d postgreSQL) OnConflict(constraint string) string {
 	return fmt.Sprintf("ON CONFLICT ON CONSTRAINT %s DO UPDATE SET", d.QuoteIdent(constraint))
 }
 
+func (d postgreSQL) OnConflictDoNothing(constraint string) string {
+	if "" == constraint {
+		return "ON CONFLICT DO NOTHING"
+	}
+	return fmt.Sprintf("ON CONFLICT ON CONSTRAINT %s DO NOTHING", d.QuoteIdent(constraint))
+}
+
 func (d postgreSQL) Proposed(column string) string {
 	return fmt.Sprintf("EXCLUDED.%s", d.QuoteIdent(column))
 }

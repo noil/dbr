@@ -72,6 +72,10 @@ func (d clickhouse) OnConflict(_ string) string {
 	return ""
 }
 
+func (d clickhouse) OnConflictDoNothing(_ string) string {
+	return ""
+}
+
 func (d clickhouse) Proposed(_ string) string {
 	return ""
 }

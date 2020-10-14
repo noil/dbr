@@ -69,6 +69,10 @@ func (d mysql) OnConflict(_ string) string {
 	return "ON DUPLICATE KEY UPDATE"
 }
 
+func (d mysql) OnConflictDoNothing(_ string) string {
+	return ""
+}
+
 func (d mysql) Proposed(column string) string {
 	return fmt.Sprintf("VALUES(%s)", d.QuoteIdent(column))
 }

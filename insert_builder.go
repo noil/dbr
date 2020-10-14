@@ -14,6 +14,7 @@ type InsertBuilder interface {
 	Values(value ...interface{}) InsertBuilder
 	Record(structValue interface{}) InsertBuilder
 	OnConflictMap(constraint string, actions map[string]interface{}) InsertBuilder
+	OnConflictDoNothing(constraint string) InsertBuilder
 	OnConflict(constraint string) ConflictStmt
 	Pair(column string, value interface{}) InsertBuilder
 }
@@ -135,6 +136,12 @@ func (b *insertBuilder) Record(structValue interface{}) InsertBuilder {
 // OnConflictMap allows to add actions for constraint violation, e.g UPSERT
 func (b *insertBuilder) OnConflictMap(constraint string, actions map[string]interface{}) InsertBuilder {
 	b.insertStmt.OnConflictMap(constraint, actions)
+	return b
+}
+
+// OnConflictDoNothing skips insetring a row when conflict happend
+func (b *insertBuilder) OnConflictDoNothing(constraint string) InsertBuilder {
+	b.insertStmt.OnConflictDoNothing(constraint)
 	return b
 }
 
